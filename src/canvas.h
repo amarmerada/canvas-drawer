@@ -9,11 +9,18 @@
 
 #include <string>
 #include <vector>
+#include "math.h"
+#include <vector>
 #include "image.h"
 
 namespace agl
 {
    enum PrimitiveType {UNDEFINED, LINES, TRIANGLES};
+   struct vertColor {
+       int x;
+       int y;
+       Pixel color;
+   };
    class Canvas
    {
    public:
@@ -36,6 +43,8 @@ namespace agl
       void begin(PrimitiveType type);
       void end();
 
+      
+
       // Specifiy a vertex at raster position (x,y)
       // x corresponds to the column; y to the row
       void vertex(int x, int y);
@@ -46,8 +55,19 @@ namespace agl
       // Fill the canvas with the given background color
       void background(unsigned char r, unsigned char g, unsigned char b);
 
+      void drawLines();
+      void drawTriangles();
+
+  
+
    private:
       Image _canvas;
+      Pixel currentColor;
+      PrimitiveType currentType;
+
+
+      float TriInterp(vertColor x, vertColor y, vertColor z);
+      
    };
 }
 

@@ -18,15 +18,23 @@ int main(int argc, char** argv)
 {
    Canvas drawer(100, 100);
 
-   drawer.color(255, 255, 255);
+   //drawer.color(255, 255, 255);
    test_line(drawer, 0, 50, 100, 50, "horizontal-line.png");
+   //printf("horizontal drawn\n");
    test_line(drawer, 50, 0, 50, 100, "vertical-line.png");
+   //printf("vertical drawn\n");
    test_line(drawer, 0, 0, 100, 100, "diagonal-line-1.png"); // slope = 1
+   //printf("diag 1\n");
    test_line(drawer, 25, 10, 75, 25,  "h-lessthan-w-line-1.png"); // slope H < W
+   printf("H<w 1\n");
    test_line(drawer, 25, 25, 75, 75,  "w-lessthan-h-line-1.png"); // slope W < H
+   printf("w<h 1\n");
    test_line(drawer, 0, 100, 100, 0, "diagonal-line-2.png"); // slope H < W
+   printf("diag 2\n");
    test_line(drawer, 25, 90, 75, 75,  "h-lessthan-w-line-2.png"); // slope H < W
+   printf("H<w 1\n");
    test_line(drawer, 25, 90, 75, 25,  "w-lessthan-h-line-2.png"); // slope W < H
+   printf("w<h 1\n");
 
    // test line interpolation
    drawer.background(0, 0, 0);
@@ -37,9 +45,11 @@ int main(int argc, char** argv)
    drawer.vertex(100, 100);
    drawer.end();
    drawer.save("line-color-interpolation.png");
+   printf("interp line\n");
 
    // test triangle with interpolation
    drawer.background(0, 0, 0);
+   printf("here\n");
    drawer.begin(TRIANGLES);
    drawer.color(255, 0, 255);
    drawer.vertex(10, 0);
