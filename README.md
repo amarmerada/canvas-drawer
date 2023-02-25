@@ -48,6 +48,3 @@ canvas-drawer/build $ ../bin/draw_art
 Triangles, circles, Left and right crescent, gibbous, semicircle, and polygons
 
 ## Results
-
-![poly](https://user-images.githubusercontent.com/67133103/221354521-77585748-8458-40c8-a3c4-4f9a9da5a27d.png)
-![moons](https://user-images.githubusercontent.com/67133103/221354549-85c2d7fd-4d28-4292-8e26-60eb6a1a9c6d.png)
