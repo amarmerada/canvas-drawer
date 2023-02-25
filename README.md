@@ -1,8 +1,8 @@
 # canvas-drawer
 
 Implements a simple drawing api
-
-TODO: Add a representative image for your project here
+![poly](https://user-images.githubusercontent.com/67133103/221354521-77585748-8458-40c8-a3c4-4f9a9da5a27d.png)
+![moons](https://user-images.githubusercontent.com/67133103/221354549-85c2d7fd-4d28-4292-8e26-60eb6a1a9c6d.png)
 
 ## How to build
 
@@ -45,8 +45,9 @@ canvas-drawer/build $ ../bin/draw_art
 
 ## Supported primitives
 
-TODO: Document the custom primitives supported by your canvas class
+Triangles, circles, Left and right crescent, gibbous, semicircle, and polygons
 
 ## Results
 
-TODO: Show artworks using your class
+![poly](https://user-images.githubusercontent.com/67133103/221354521-77585748-8458-40c8-a3c4-4f9a9da5a27d.png)
+![moons](https://user-images.githubusercontent.com/67133103/221354549-85c2d7fd-4d28-4292-8e26-60eb6a1a9c6d.png)
