@@ -45,6 +45,6 @@ canvas-drawer/build $ ../bin/draw_art
 
 ## Supported primitives
 
-Triangles, circles, Left and right crescent, gibbous, semicircle, and polygons
+Triangles, circles, crescent, semicircle, and polygons
 
 ## Results
