@@ -45,7 +45,11 @@ void Canvas::end()
 {
 	if (this->currentType == LINES) {
 		while (myVerticies.size() % 2 == 0 && myVerticies.size() != 0) {
-			drawLines();
+			vertColor b = myVerticies.back();
+			myVerticies.pop_back();
+			vertColor a = myVerticies.back();
+			myVerticies.pop_back();
+			drawLine2(a, b);
 		}
 	}
 	else if (this->currentType == TRIANGLES) {
@@ -60,6 +64,18 @@ void Canvas::end()
 	else if(this->currentType == CIRCLES){
 		while (myVerticies.size() != 0) {
 			drawCircles(myVerticies.back());
+			myVerticies.pop_back();
+		}
+	}
+	else if (this->currentType == FAN) {
+		while (myVerticies.size() != 0) {
+			drawFan(myVerticies.back());
+			myVerticies.pop_back();
+		}
+	}
+	else if (this->currentType == ROSECURVE) {
+		while (myVerticies.size() != 0) {
+			drawRoseCurve(myVerticies.back());
 			myVerticies.pop_back();
 		}
 	}
@@ -123,6 +139,52 @@ void Canvas::vertex(int x, int y)
 	myVerticies.push_back(vtx);
 }
 
+int Canvas::getK() {
+	return this->k;
+}
+
+void Canvas::setK(int kval) {
+	this->k = kval;
+}
+
+void Canvas::drawRoseCurve(vertColor a) {
+	printf("call");
+	int x;
+	int y;
+	int r;
+	for (float i = 0; i < 6.283; i += 0.001) {
+		r = getRadius() * cos(getK() * i);
+		x = r * cos(i) + a.x;
+		y = r * sin(i) + a.y;
+		Pixel shift;
+		shift.r = a.color.r * (1 - (i / 6.283)) + currentSecondary.r * (i / 6.283);
+		shift.g = a.color.g * (1 - (i / 6.283)) + currentSecondary.g * (i / 6.283);
+		shift.b = a.color.b * (1 - (i / 6.283)) + currentSecondary.b * (i / 6.283);
+		if (x < _canvas.width() && y < _canvas.height()) {
+			printf("setting\n");
+			_canvas.set(y, x, shift);
+		}
+	}
+}
+
+void Canvas::setAngle(int ang) {
+	this->angle = ang;
+}
+
+void Canvas::drawFan(vertColor a) {
+	float ang = ((float)this->angle / (float)360) * 6.283;
+	int x;
+	int y;
+	for (float i = 0; i < ang; i += 0.01) {
+		x = getRadius() * cos(angle) + a.x;
+		y = getRadius() * sin(angle) + a.y;
+		begin(LINES);
+		color(a.color.r, a.color.g, a.color.b);
+		vertex(a.x, a.y);
+		vertex(x, y);
+		end();
+	}
+}
 
 void Canvas::drawCircles(vertColor a) {
 	printf("in circles\n");
@@ -266,7 +328,7 @@ void Canvas::drawGibbousL(vertColor a) {
 }
 
 void Canvas::drawGibbousR(vertColor a) {
-	printf("in gibb L\n");
+	printf("in gibb R\n");
 	int rad = this->radius;
 	int ymin = a.y - rad;
 	if (ymin < 0) {
@@ -378,211 +440,107 @@ void Canvas::setRadius(int r) {
 	this->radius = r;
 }
 
-void Canvas::drawLines() {
-
-	vertColor a = myVerticies.back();
-	myVerticies.pop_back();
-	vertColor b = myVerticies.back();
-	myVerticies.pop_back();
-	int H = b.y - a.y;
+//slides
+void Canvas::drawLine2(vertColor a, vertColor b) {
 	int W = b.x - a.x;
-	printf("INITIAL: a.x: %d a.y: %d b.x: %d  b.y: %d  H: %d  W: %d\n", a.x, a.y, b.x, b.y, H, W);
-	
-	if (H == 0) {
-		if (b.x > a.x) {
-			for (int i = a.x; i <= b.x; i++) {
-				Pixel shift;
-				float interp = sqrt(pow(a.x - i, 2) + pow(a.y, 2)) / sqrt(pow(b.x - i, 2) + pow(b.y, 2));
-				shift.r = a.color.r * (1 - interp) + b.color.r * (interp);
-				shift.g = a.color.g * (1 - interp) + b.color.g * (interp);
-				shift.b = a.color.b * (1 - interp) + b.color.b * (interp);
-				_canvas.set(a.y, i, shift);
-			}
+	int H = b.y - a.y;
+
+	vertColor hold;
+	if (abs(H) < abs(W)) {
+		if (a.x > b.x) {
+			hold = a;
+			drawDown(b, a);
 		}
 		else {
-			for (int i = b.x; i <= a.x; i++) {
-				Pixel shift;
-				float interp = sqrt(pow(a.x - i, 2) + pow(a.y, 2)) / sqrt(pow(b.x - i, 2) + pow(b.y, 2));
-				shift.r = a.color.r * (1 - interp) + b.color.r * (interp);
-				shift.g = a.color.g * (1 - interp) + b.color.g * (interp);
-				shift.b = a.color.b * (1 - interp) + b.color.b * (interp);
-				_canvas.set(a.y, i, shift);
-			}
+			drawDown(a, b);
 		}
 	}
-	else if (W == 0) {
-		printf("w = 0 called\n");
-		if (b.y > a.y) {
-			for (int i = a.y; i <= b.y; i++) {
-				Pixel shift;
-				float interp = sqrt(pow(a.x, 2) + pow(a.y - i, 2)) / sqrt(pow(b.x, 2) + pow(b.y - i, 2));
-				printf("b.x: %d, i: %d\n", b.x, i);
-				shift.r = a.color.r * (1 - interp) + b.color.r * (interp);
-				shift.g = a.color.g * (1 - interp) + b.color.g * (interp);
-				shift.b = a.color.b * (1 - interp) + b.color.b * (interp);
-				_canvas.set(i, b.x, shift);
-			}
+	else {
+		if (a.y > b.y) {
+			drawUp(b, a);
 		}
 		else {
-			for (int i = b.y; i <= a.y; i++) {
-				Pixel shift;
-				float interp = sqrt(pow(a.x, 2) + pow(a.y - i, 2)) / sqrt(pow(b.x, 2) + pow(b.y - i, 2));
-				shift.r = a.color.r * (1 - interp) + b.color.r * (interp);
-				shift.g = a.color.g * (1 - interp) + b.color.g * (interp);
-				shift.b = a.color.b * (1 - interp) + b.color.b * (interp);
-				_canvas.set(i, b.x, shift);
-			}
-		}
-	}else if ((H / W) == 1) {
-		if (H > 0) {
-
-		}
-		else {
-
+			drawUp(a, b);
 		}
 	}
-	else if (abs(W) > abs(H)) {
-		printf("absW > absH\n");
-		if (b.y > a.y) {
-			int x = a.x;
-			int incr;
-			if (W > 0) {
-				incr = 1;
-			}
-			else {
-				incr = -1;
-				W = abs(W);
-			}
+}
 
-			int F = 2 * (W - H);
 
-			for (int i = a.y; i <= b.y; i++) {
-				Pixel shift;
-				float interp = sqrt(pow(a.x - x, 2) + pow(a.y - i, 2)) / sqrt(pow(b.x - x, 2) + pow(b.y - i, 2));
-				shift.r = a.color.r * (1 - interp) + b.color.r * (interp);
-				shift.g = a.color.g * (1 - interp) + b.color.g * (interp);
-				shift.b = a.color.b * (1 - interp) + b.color.b * (interp);
-				_canvas.set(x, i, shift);
-				if (F > 0) {
-					x += incr;
-					F += 2 * (W - H);
-				}
-				else {
-					F += 2 * W;
-				}
-			}
+void Canvas::drawDown(vertColor a, vertColor b) {
+	int y = a.y;
+	int W = b.x - a.x;
+	int H = b.y - a.y;
+	int incr = 1;
+
+	if (H < 0) {
+		incr = incr * (-1);
+		H = H * (-1);
+	}
+
+	int F = (2 * H) - W;
+	for (int i = a.x; i <= b.x; i++) {
+		if (i < _canvas.width()) {
+			float interp = sqrt(pow(a.x - i, 2) + pow(a.y - y, 2)) / sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
+			Pixel shift;
+			shift.r = a.color.r * (1 - interp) + b.color.r * interp;
+			shift.g = a.color.g * (1 - interp) + b.color.g * interp;
+			shift.b = a.color.b * (1 - interp) + b.color.b * interp;
+			_canvas.set(y, i, shift);
 		}
-		else {
-			struct vertColor hold = { a.x, a.y, a.color };
-			a = b;
-			b = hold;
 
-			int x = a.x;
-			int incr;
-			if (W > 0) {
-				incr = 1;
-			}
-			else {
-				incr = -1;
-				W = abs(W);
-			}
-
-			int F = 2 * W - H;
-
-			for (int i = a.y; i <= b.y; i++) {
-				Pixel shift;
-				float interp = sqrt(pow(a.x - x, 2) + pow(a.y - i, 2)) / sqrt(pow(b.x - x, 2) + pow(b.y - i, 2));
-				shift.r = a.color.r * (1 - interp) + b.color.r * (interp);
-				shift.g = a.color.g * (1 - interp) + b.color.g * (interp);
-				shift.b = a.color.b * (1 - interp) + b.color.b * (interp);
-				_canvas.set(x, i, shift);
-				if (F > 0) {
-					x += incr;
-					F += 2 * (W - H);
-				}
-				else {
-					F += 2 * W;
-				}
-			}
+		if (F > 0) {
+			y += incr;
+			F += 2 * (H - W);
+		}else{
+			F += 2 * H;
 		}
 	}
-	else if (abs(H) > abs(W)) {
-		printf("absH > abs W\n");
-		if (b.x > a.x) {
-			int y = a.y;
-			int incr;
-			if (H > 0) {
-				incr = 1;
-			}
-			else {
-				incr = -1;
-				W = abs(W);
-			}
+}
 
-			int F = 2 * H - W;
+//literally just the algorithms from the slides T_T
+void Canvas::drawUp(vertColor a, vertColor b) {
+	int x = a.x;
+	int W = b.x - a.x;
+	int H = b.y - a.y;
+	int incr = 1; 
 
-			for (int i = a.x; i <= b.x; i++) {
-				float interp = sqrt(pow(a.y - y, 2) + pow(a.x - i, 2)) / sqrt(pow(b.x - i, 2) + pow(b.y - y, 2));
-				Pixel shift;
-				shift.r = a.color.r * (1 - interp) + b.color.r * (interp);
-				shift.g = a.color.g * (1 - interp) + b.color.g * (interp);
-				shift.b = a.color.b * (1 - interp) + b.color.b * (interp);
-				_canvas.set(i, y, shift);
-				if (F > 0) {
-					y += incr;
-					F += 2 * (H - W);
-				}
-				else {
-					F += 2 * H;
-				}
-			}
+	if (W < 0) {
+		incr = -1;
+		W = (-1 * W);
+	}
+
+	int F = (2 * W) - H;
+
+	for (int j = a.y; j <= b.y; j++) {
+		 if (j < _canvas.height()) {
+			float interp = sqrt(pow(a.x -x, 2) + pow(a.y - j, 2)) / sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
+			Pixel shift;
+			shift.r = a.color.r * (1 - interp) + b.color.r * interp;
+			shift.g = a.color.g * (1 - interp) + b.color.g * interp;
+			shift.b = a.color.b * (1 - interp) + b.color.b * interp;
+			_canvas.set(j, x, shift);
+		}
+
+		if (F > 0) {
+			x += incr;
+			F += 2 * (W - H);
 		}
 		else {
-			struct vertColor hold = { a.x, a.y, a.color };
-			a = b;
-			b = hold;
-
-			int y = a.y;
-			int incr;
-			if (H > 0) {
-				incr = 1;
-			}
-			else {
-				incr = -1;
-				W = abs(W);
-			}
-
-			int F = 2 * H - W;
-
-			for (int i = a.x; i <= b.x; i++) {
-				float interp = sqrt(pow(a.y - y, 2) + pow(a.x - i, 2)) / sqrt(pow(b.x - i, 2) + pow(b.y - y, 2));
-				Pixel shift;
-				shift.r = a.color.r * (1 - interp) + b.color.r * (interp);
-				shift.g = a.color.g * (1 - interp) + b.color.g * (interp);
-				shift.b = a.color.b * (1 - interp) + b.color.b * (interp);
-				_canvas.set(i, y, shift);
-				if (F > 0) {
-					y += incr;
-					F += 2 * (H - W);
-				}
-				else {
-					F += 2 * H;
-				}
-			}
+			F += 2 * W; 
 		}
 	}
 }
 
 void Canvas::drawTriangles() {
 	vertColor c = myVerticies.back();
-	printf("INSIDE\n");
+	//printf("INSIDE\n");
 	myVerticies.pop_back();
 	vertColor b = myVerticies.back();
 	myVerticies.pop_back();
 	vertColor a = myVerticies.back();
 	myVerticies.pop_back();
 
-	printf("a.x: %d b.x: %d c.x: %d\n", a.x, b.x, c.x);
+	//printf("a.x: %d b.x: %d c.x: %d\n", a.x, b.x, c.x);
 	int xmax = max(max(a.x, b.x), c.x);
 	if (xmax >= _canvas.width()) {
 		xmax = _canvas.width() - 1;
@@ -606,7 +564,7 @@ void Canvas::drawTriangles() {
 			float gamma = TriInterp(currvtx, a, b) / TriInterp(c, a, b);
 			float beta = 1 - alpha - gamma;
 			if (i < 10) {
-				printf("alpha: %f beta: %f gamma: %f\n", alpha, beta, gamma);
+				//printf("alpha: %f beta: %f gamma: %f\n", alpha, beta, gamma);
 
 			}
 			if (alpha >= 0 && beta >= 0 && gamma >= 0) {
@@ -638,13 +596,17 @@ void Canvas::drawPolygon(vertColor a) {
 		helper3 += helper2;
 	}
 	//draw them
-	printf("trivtx size: %d\n", triVtx.size());
+	//printf("trivtx size: %d\n", triVtx.size());
 	for (int i = 0; i < triVtx.size(); i++) {
 		vertex(triVtx[i].x, triVtx[i].y);
 		vertex(triVtx[(i+1) % triVtx.size()].x, triVtx[(i + 1) % triVtx.size()].y);
 		vertex(a.x, a.y);
 		drawTriangles();
 	}
+}
+
+int Canvas::getRadius() {
+	return this->radius;
 }
 
 void Canvas::drawStar(vertColor a) {
@@ -671,7 +633,7 @@ void Canvas::drawStar(vertColor a) {
 		helper4 += helper2;
 	}
 	//draw them
-	printf("trivtx size: %d\n", triVtx.size());
+	//printf("trivtx size: %d\n", triVtx.size());
 	for (int i = 0; i < triVtx.size(); i++) {
 		vertex(triVtx[i].x, triVtx[i].y);
 		vertex(triVtx[(i + 1) % triVtx.size()].x, triVtx[(i + 1) % triVtx.size()].y);
@@ -679,7 +641,7 @@ void Canvas::drawStar(vertColor a) {
 		drawTriangles();
 		vertex(triVtx[i].x, triVtx[i].y);
 		vertex(triVtx[(i + 1) % triVtx.size()].x, triVtx[(i + 1) % triVtx.size()].y);
-		int helper5 = (i + 2) % ptVtx.size();
+		int helper5 = (i + 1) % ptVtx.size();
 		vertex(ptVtx[helper5].x, ptVtx[helper5].y);
 		drawTriangles();
 	}
@@ -747,6 +709,14 @@ void Canvas::color(unsigned char r, unsigned char g, unsigned char b)
 	struct Pixel newColor = Pixel{ r,g,b };
 	currentColor = newColor;
 
+}
+
+int Canvas::getWidth() {
+	return _canvas.width();
+}
+
+int Canvas::getHeight() {
+	return _canvas.height();
 }
 
 void Canvas::background(unsigned char r, unsigned char g, unsigned char b)

@@ -155,25 +155,37 @@ int main(int argc, char** argv)
    drawer.save("semiL.png");
 
    printf("here 7\n");
-   Canvas moonPhases(1000, 500);
+   Canvas moonPhases(500, 500);
 
    moonPhases.background(85, 1, 130);
    Pixel f = Pixel{ 20, 0, 60 };
    Pixel e = Pixel{ 0, 40, 15 };
    moonPhases.gradBackground(f, e, false); 
-   moonPhases.begin(STAR);
-   moonPhases.setRadius(40);
-   moonPhases.setSides(8);
-   moonPhases.color(255, 255, 255);
-   moonPhases.vertex(300, 800);
+   
    moonPhases.end();
-   printf("----------\n");
    moonPhases.begin(PHASE);
    moonPhases.border(0);
    moonPhases.secondColor(0, 0, 0);
-   moonPhases.color(250, 2, 140);
+   moonPhases.color(230, 250, 200);
    moonPhases.setRadius(25);
-   moonPhases.vertex(500, 100);
+   moonPhases.vertex(250, 100);
+   moonPhases.end();
+   moonPhases.begin(ROSECURVE);
+   moonPhases.color(200, 0, 100);
+   moonPhases.secondColor(100, 0, 200);
+   moonPhases.setK(10);
+   moonPhases.vertex(100, 300);
+   moonPhases.end();
+   moonPhases.begin(ROSECURVE);
+   moonPhases.color(0, 200, 100);
+   moonPhases.setK(8);
+   moonPhases.vertex(200, 300);
+   moonPhases.end();
+   moonPhases.begin(ROSECURVE);
+   moonPhases.color(100, 200, 50);
+   moonPhases.setK(6);
+   moonPhases.setRadius(100);
+   moonPhases.vertex(300, 300);
    moonPhases.end();
    moonPhases.save("moons.png");
 
@@ -187,22 +199,63 @@ int main(int argc, char** argv)
    polyTester.begin(POLYGON);
    polyTester.setRadius(80);
    polyTester.setSides(12);
-   polyTester.color(255, 255, 255);
+   polyTester.color(0, 0, 0);
    polyTester.vertex(100, 100);
    polyTester.end(); 
+   polyTester.begin(STAR);
+   polyTester.setRadius(40);
+   polyTester.setSides(12);
+   polyTester.color(255, 255, 255);
+   polyTester.vertex(300, 100);
+   polyTester.end();
    polyTester.begin(POLYGON);
    polyTester.setRadius(90);
    polyTester.setSides(5);
-   polyTester.color(255, 255, 255);
+   polyTester.color(0, 0, 0);
    polyTester.vertex(300, 300);
+   polyTester.end();
+   polyTester.begin(STAR);
+   polyTester.setRadius(45);
+   polyTester.setSides(5);
+   polyTester.color(255, 255, 255);
+   polyTester.vertex(100, 300);
    polyTester.end();
    polyTester.begin(POLYGON);
    polyTester.setRadius(90);
    polyTester.setSides(8);
-   polyTester.color(255, 255, 255);
+   polyTester.color(0, 0, 0);
    polyTester.vertex(100, 500);
    polyTester.end();
+   polyTester.begin(STAR);
+   polyTester.setRadius(45);
+   polyTester.setSides(8);
+   polyTester.color(255, 255, 255);
+   polyTester.vertex(300, 500);
+   polyTester.end();
    polyTester.save("poly.png");
+
+   Canvas star(400, 400);
+   star.background(0, 0, 0);
+   star.color(255, 255, 255);
+   star.setSides(8);
+   star.setRadius(50);
+   star.begin(STAR);
+   star.vertex(200, 200);
+   star.end();
+   star.save("stars.png");
+
+   Canvas rose(400, 400);
+   rose.background(0, 0, 0);
+   rose.color(255, 0, 0);
+   rose.secondColor(0, 0, 255);
+   rose.begin(ROSECURVE);
+   rose.vertex(200, 200);
+   rose.setRadius(75);
+   rose.setK(8);
+   rose.end();
+   rose.save("rosecurve.png");
+
+   
 
    return 0;
 }

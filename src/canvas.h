@@ -15,7 +15,7 @@
 
 namespace agl
 {
-    enum PrimitiveType { UNDEFINED, LINES, TRIANGLES, CIRCLES, CRESCENTR, CRESCENTL, GIBBOUSL, GIBBOUSR, SEMIR, SEMIL, PHASE, POLYGON, STAR};
+    enum PrimitiveType { FAN, ROSECURVE, CONCENTRIC, UNDEFINED, LINES, TRIANGLES, CIRCLES, CRESCENTR, CRESCENTL, GIBBOUSL, GIBBOUSR, SEMIR, SEMIL, PHASE, POLYGON, STAR};
     struct vertColor {
         int x;
         int y;
@@ -75,7 +75,17 @@ namespace agl
         void gradBackground(Pixel a, Pixel b, Pixel c, Pixel d);
         //if diag = true, 0,0 and max, max are the same color
         void gradBackground(Pixel a, Pixel b, bool column);
-
+        void drawLine2(vertColor a, vertColor b);
+        void drawUp(vertColor a, vertColor b);
+        void drawDown(vertColor a, vertColor b);
+        int getWidth();
+        int getHeight();
+        int getRadius();
+        void drawRoseCurve(vertColor a);
+        int getK();
+        void setK(int k);
+        void drawFan(vertColor a);
+        void setAngle(int ang);
 
 
     private:
@@ -86,6 +96,8 @@ namespace agl
         int bwidth = 0;
         Pixel currentSecondary;
         int sides = 0;
+        int k;
+        int angle;
 
 
         float TriInterp(vertColor x, vertColor y, vertColor z);
