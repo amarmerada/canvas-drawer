@@ -2,6 +2,8 @@
 
 Implements a simple drawing api
 
+![poly](https://user-images.githubusercontent.com/67133103/221652947-cfd613ad-9022-4681-830e-bacea16bee2d.png)
+![moons2](https://user-images.githubusercontent.com/67133103/221652984-31a58441-6265-4a8f-9df3-e10a86004448.png)
 
 
 ## How to build
@@ -45,6 +47,6 @@ canvas-drawer/build $ ../bin/draw_art
 
 ## Supported primitives
 
-Triangles, circles, crescent, semicircle, and polygons
+ circles, crescent, semicircle, stars, polygons
 
 ## Results
