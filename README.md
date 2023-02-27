@@ -2,7 +2,7 @@
 
 Implements a simple drawing api
 
-TODO: Add a representative image for your project here
+
 
 ## How to build
 
@@ -45,8 +45,6 @@ canvas-drawer/build $ ../bin/draw_art
 
 ## Supported primitives
 
-TODO: Document the custom primitives supported by your canvas class
+Triangles, circles, crescent, semicircle, and polygons
 
 ## Results
-
-TODO: Show artworks using your class
